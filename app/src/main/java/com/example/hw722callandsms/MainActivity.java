@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
                 String number = edtPhone.getText().toString();
 
                 if (number.isEmpty()) {
-                    showToast("Пожалуйста, введите номер!");
+                    showToast(getString(R.string.empty_number_message));
                     return;
                 }
 
@@ -50,6 +51,32 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        btnSms.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String number = edtPhone.getText().toString();
+                String message = edtMessage.getText().toString();
+
+                if (number.isEmpty() || message.isEmpty()) {
+                    showToast(getString(R.string.empty_fields_message));
+                    return;
+                }
+
+                sendSms(number, message);
+            }
+        });
+    }
+
+    private void sendSms(String number, String message) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) !=
+                PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS},
+                    MY_PERMISSIONS_REQUEST_SMS);
+        } else {
+            SmsManager smsManager = SmsManager.getDefault();
+            smsManager.sendTextMessage(number, null, message, null, null);
+        }
     }
 
     private void call(String number) {
@@ -71,8 +98,16 @@ public class MainActivity extends AppCompatActivity {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     call(edtPhone.getText().toString());
                 } else {
-                    showToast("Резрешение на звонки отклонено");
+                    showToast(getString(R.string.permission_denied));
                 }
+                break;
+            case MY_PERMISSIONS_REQUEST_SMS:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    sendSms(edtPhone.getText().toString(), edtMessage.getText().toString());
+                } else {
+                    showToast(getString(R.string.permission_denied));
+                }
+                break;
         }
     }
 

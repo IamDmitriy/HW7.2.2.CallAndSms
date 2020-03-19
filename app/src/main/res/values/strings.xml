@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">HW7.2.2.CallAndSms</string>
+    <string name="permission_denied">Разрешение не предоставлено!</string>
+    <string name="empty_fields_message">Пожалуйста, заполните все поля!</string>
+    <string name="empty_number_message">Пожалуйста, введите номер!</string>
+    <string name="get_number_message">Введите номер</string>
+    <string name="get_sms_message">Введите текст SMS</string>
+    <string name="call">Вызов</string>
+    <string name="sms">SMS</string>
 </resources>
